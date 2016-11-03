@@ -8,6 +8,7 @@ class Message extends Component {
 
   render() {
     console.log("Rendering <Message />");
+    console.log("this.props", this.props);
     return (
         <div className="message">
           <span className="username">{this.props.username}</span>

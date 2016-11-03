@@ -9,6 +9,8 @@ class MessageList extends Component {
 
   render() {
     console.log("Rendering <MessageList />");
+    console.log("this.props.messages", this.props.messages);
+
     return (
 
       <div id="message-list">
@@ -20,11 +22,7 @@ class MessageList extends Component {
                 username={message.username}
                 content={message.content} />
             })}
-        
-        <div className="message system"> 
-          Anonymous1 changed their name to nomnom.
-        </div>
-        
+    
      </div>
 
     );
