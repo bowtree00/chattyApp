@@ -13,43 +13,25 @@ class ChatBar extends Component {
   }
 
   inputChange(event) {
-    console.log("letter entered in box") 
+    // console.log("letter entered in box") 
     this.setState({value: event.target.value});  
   }
 
   handleEvent(event) {
-    console.log("in handleEvent")
+    // console.log("in handleEvent")
 
     event.preventDefault();
 
     if (event.key === 'Enter') {
       this.props.someFunction(event.target.value);
       this.setState({value:''}); // Resets the text box
+      console.log("ENTER PRESSED")
     }
-
-    // this.setState({value: event.target.value});  
-
-    // message = {value: event.target.value};
-
-    // this.props.someFunction
-
-    // console.log(event.target.value)
-    // someFunction(message);
-    // 
-    // handleEvent(event) {
-    //  event.preventDefault()
-    //    this.props.handleUserMessage(event.target.submitbutton.value);
-    //    }
-    // 
-    // 
-    // event.preventDefault()
-    //    this.props.handleUserMessage(event.target.submitbutton.value); //????
 
   }
 
   render() {
     console.log("Rendering <ChatBar />");
-    // debugger
 
     return (
 
@@ -64,8 +46,6 @@ class ChatBar extends Component {
           onKeyUp={this.handleEvent} /> 
       </footer>
       // NOTE: need to use 'onKeyUp' in the form submission above - onSubmit does not work for a form if there is no 'submit' button
-
-      // <App .../>
 
     );
   }

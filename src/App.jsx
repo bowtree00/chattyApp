@@ -3,7 +3,6 @@ import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
 
 
-
 class App extends Component {
 
   constructor(props) {
@@ -24,60 +23,38 @@ class App extends Component {
         }
       ]
     };
-    
-    // this.state = {
-    //   currentUser: {},
-    //   messages: [{
-    //     id: "",
-    //     username: "",
-    //     content: ""
-    //   }]
-    // };
 
   }
 
   componentDidMount () {
     console.log("componentDidMount <App />");
-    // setTimeout(() => {
-    //   console.log("Simulating incoming message");
-    //   // Add a new message to the list of messages in the data store
-    //   const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-    //   const messages = this.state.messages.concat(newMessage)
-    //   // Update the state of the app component.
-    //   // Calling setState will trigger a call to render() in App and all child components.
-    //   this.setState({messages: messages})
-    // }, 3000);
-
-
-    // const newMessage = ??
-    // const messages = this.state.messages
-    // this.setState({messages: messages})
+    this.socket = new WebSocket("ws://localhost:4000/"); // by using 'this' here, then 'socket' takes the scope of 'App' rather than 'componentDidMount'. if we didn't use 'this', then socket wouldn't be available throughout App.
+    
+    this.socket.onopen = function (event) {
+      console.log("Connected to server!"); 
+    };
 
   }
 
-
-  // changeMessage(message) {
-  //   let contact = this.state.contacts.filter(function(c) {        
-  //     return c.id === id;
-  //   })[0];
-  //   this.setState({currentContact: contact});
-  // }
 
   someFunction (message) {
     // create a function here that does what I want it to do when a message is typed in
     // Then - send the function to ChatBar below
 
-    console.log("App - someFunction");
-    console.log("message", message);
+    var newId = this.state.messages.length + 1;
+    var userName = this.state.currentUser;
 
-    this.state.messages.push(message)
-    this.setState(this.state) // This replaces the state with a copy of itself (with the new message appended), then triggers render
-    console.log("this.state", this.state)
+    // this.state.messages.push({ id: newId, username: userName.name, content: message }) // this adds the new message on to the messages array in state
+
+    // this.setState(this.state) // This replaces the state with a copy of itself (with the new message appended), then triggers render
+
+    this.socket.send(JSON.stringify({ id: newId, username: userName.name, content: message }));
+
+
   }
 
   render() {
     console.log("Rendering <App />");
-    // debugger;
 
     return (
       <div className="wrapper">
