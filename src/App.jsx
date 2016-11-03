@@ -9,7 +9,7 @@ class App extends Component {
     super(props);
     
     this.state = {
-      currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
+      currentUser: {name: "Anonymous"}, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: []
     };
 
@@ -38,24 +38,26 @@ class App extends Component {
           // handle incoming message
           console.log("I got a message!!!", message)
 
+          message.type = "userMessage"; // change the message type to scrub the 'type' message to/from the websocket server. Make these more meaningful for messageList, which shouldn't have to know about different server messages in order to render messages appropriately. Also, what happens if the user is being sent 'old' messages, not new incoming messages? Then using 'incomingMessage' in MessageList, they would miss the old messages.
+
           var messages = this.state.messages.concat(message); // use CONCAT instead of PUSH because with push, you are mutating the state!  If you change state without using setState, React won't know about it and won't update.
-          // var messages = this.state.messages;
-          // messages.push(message);
+            // var messages = this.state.messages;
+            // messages.push(message);
 
           this.setState({ messages: messages });
 
           break;
         case "incomingNotification":
-          // handle incoming notification
-          // 
+    
           console.log("incomingNotification received!");
 
-          var messages = this.state.messages.concat(message); 
-          // var messages = this.state.messages;
-          // messages.push(message);
+          message.type = "usernameChange"; // change the message type to scrub the messages to/from the websocket server. Make these more meaningful.
 
-          // this.setState({ currentUser: { name: username } });
+          var messages = this.state.messages.concat(message); 
+
           this.setState({ messages: messages });
+
+          console.log("NOTIFICATION", message)
 
           break;
       default:
@@ -69,17 +71,12 @@ class App extends Component {
     var newId = uuid.v4();
     var userName = this.state.currentUser;
 
-    // this.state.messages.push({ id: newId, username: userName.name, content: message }) // this adds the new message on to the messages array in state
-
-    // this.setState(this.state) // This replaces the state with a copy of itself (with the new message appended), then triggers render
-
     this.socket.send(JSON.stringify({ type: "postMessage", id: newId, username: userName.name, content: message }));
 
   }
 
   updateUsername (newUsername) {
     var newId = uuid.v4();
-    // SEND the user to the WSS here?
     
     let currUser = this.state.currentUser.name
 

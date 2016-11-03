@@ -17,12 +17,12 @@ class MessageList extends Component {
         
           {this.props.messages.map( (message) =>
             {
-              if (message.type === "incomingMessage") {
+              if (message.type === "userMessage") {
               return <Message 
                 key={message.id}
                 username={message.username}
                 content={message.content} />
-              } else if (message.type === "incomingNotification") {
+              } else if (message.type === "usernameChange") {
                 return <Notification
                   key={message.id}
                   content={message.content} />

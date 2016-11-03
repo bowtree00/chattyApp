@@ -17,13 +17,12 @@ const server = express()
 const wss = new SocketServer({ server });
 
 
-// Broadcast to all.
+// Function that will broadcast data to all.
 wss.broadcast = function broadcast(data) {
   wss.clients.forEach(function each(client) {
     client.send(data);
   });
 };
-
 
 // Set up a callback that will run when a client connects to the server
 // When a client connects they are assigned a socket, represented by
