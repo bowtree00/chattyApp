@@ -31,7 +31,7 @@ class ChatBar extends Component {
       this.props.onMessageCompleted(this.state.messageValue); // event.target.value
       this.setState({messageValue:''}); // Resets the text box
 
-      console.log("ENTER PRESSED")
+      console.log("MESSAGE SUBMITTED")
     }
   }
 
@@ -44,14 +44,14 @@ class ChatBar extends Component {
   }
 
   onUsernameKeyUp(event) {
-    console.log("in onUsernameKeyUp")
+    // console.log("in onUsernameKeyUp")
 
     event.preventDefault();
 
     if (event.key === 'Enter' || event.keyCode === 9 /* Tab Key */) { // UPDATE THIS 
       this.props.usernameChanged(this.state.usernameValue);
       // this.setState({usernameValue:''}); // Resets the text box
-      console.log("ENTER PRESSED")
+      console.log("USERNAME CHANGE SUBMITTED")
     }
 
   }

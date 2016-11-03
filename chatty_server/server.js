@@ -33,10 +33,24 @@ wss.on('connection', (ws) => {
 
   ws.on('message', function incoming(message) {
  
-    wss.broadcast(message);
-
     console.log('received: ', JSON.parse(message));
+    
+    var tempMessage = JSON.parse(message);
 
+    if (tempMessage["type"] === 'postMessage') {
+      tempMessage["type"]='incomingMessage';
+    } else if (tempMessage["type"] === 'postNotification') {
+      tempMessage["type"]='incomingNotification';
+    } else {
+      tempMessage["type"]='UNKNOWN_TYPE';
+    }
+
+    var newMessage = JSON.stringify(tempMessage);
+
+    wss.broadcast(newMessage);
+
+    console.log('sending: ', JSON.parse(newMessage));
+    
   });
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   // 

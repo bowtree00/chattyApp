@@ -22,40 +22,50 @@ class App extends Component {
     this.socket = new WebSocket("ws://localhost:4000/"); // by using 'this' here, then 'socket' takes the scope of 'App' rather than 'componentDidMount'. if we didn't use 'this', then socket wouldn't be available throughout App.
     
     this.socket.onopen = (event) => {
-      // NOTE: This main function is a fat arrow function because you want to cancel out the behaviour of 'this.socket' below pointing to this.socket above, which would make 'this.socket' below be like 'this.socket.socket' (??)
-      // When you use the fat arrow, it won't create a closure, which is what happens when you write this as function () {...}
-      
+      // NOTE: This function is a fat arrow function because you don't want to create a closure here (arrow functions allow you to retain the scope of the caller inside the function) - if you did, then when you called 'this' inside this function, it would point to scope created in this function and point to 'scope', rather than to the global scope of 'app'. 
       
       console.log("Connected to server!"); 
-      
-
-
-    //       socket.onmessage = function (messageEvent) {
-    //   console.log(messageEvent.data);
-    //   var message = JSON.parse(messageEvent.data);
-    //   messageHandlers[message.type](message.data);
-    // };
 
     };
 
     this.socket.onmessage = (event) => {
       // SET STATE!
-      console.log("I got a message!!!")
+      
       var message = JSON.parse(event.data);
 
-      var messages = this.state.messages;
-      messages.push(message);
+      switch(message.type) {
+        case "incomingMessage":
+          // handle incoming message
+          console.log("I got a message!!!", message)
 
-      this.setState({ messages: messages });
+          var messages = this.state.messages.concat(message); // use CONCAT instead of PUSH because with push, you are mutating the state!  If you change state without using setState, React won't know about it and won't update.
+          // var messages = this.state.messages;
+          // messages.push(message);
 
+          this.setState({ messages: messages });
+
+          break;
+        case "incomingNotification":
+          // handle incoming notification
+          // 
+          console.log("incomingNotification received!");
+
+          var messages = this.state.messages.concat(message); 
+          // var messages = this.state.messages;
+          // messages.push(message);
+
+          // this.setState({ currentUser: { name: username } });
+          this.setState({ messages: messages });
+
+          break;
+      default:
+        // show an error in the console if the message type is unknown
+        throw new Error("Unknown event type " + data.type);
+      };
     } 
-
   }
 
   sendMessageToServer (message) {
-    // create a function here that does what I want it to do when a message is typed in
-    // Then - send the function to ChatBar below
-
     var newId = uuid.v4();
     var userName = this.state.currentUser;
 
@@ -63,13 +73,21 @@ class App extends Component {
 
     // this.setState(this.state) // This replaces the state with a copy of itself (with the new message appended), then triggers render
 
-    this.socket.send(JSON.stringify({ id: newId, username: userName.name, content: message }));
+    this.socket.send(JSON.stringify({ type: "postMessage", id: newId, username: userName.name, content: message }));
 
   }
 
-  updateUsername (username) {
-  
-    this.setState({ currentUser: { name: username } });
+  updateUsername (newUsername) {
+    var newId = uuid.v4();
+    // SEND the user to the WSS here?
+    
+    let currUser = this.state.currentUser.name
+
+    let message = JSON.stringify({ type: "postNotification", id: newId,content: currUser + " has changed their name to " + newUsername })
+    
+    this.setState({ currentUser: { name: newUsername } });
+
+    this.socket.send(message);
 
   }
 
