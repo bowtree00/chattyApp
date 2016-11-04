@@ -21,8 +21,9 @@ class MessageList extends Component {
               return <Message 
                 key={message.id}
                 username={message.username}
-                content={message.content} />
-              } else if (message.type === "usernameChange") {
+                content={message.content} 
+                userColour={message.userColour} />
+              } else if (message.type === "notification") {
                 return <Notification
                   key={message.id}
                   content={message.content} />

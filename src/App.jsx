@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
+import UserCount from './UserCount.jsx';
 import uuid from 'node-uuid';
 
 class App extends Component {
@@ -10,7 +11,9 @@ class App extends Component {
     
     this.state = {
       currentUser: {name: "Anonymous"}, // optional. if currentUser is not defined, it means the user is Anonymous
-      messages: []
+      messages: [],
+      usersOnline: "",
+      userColour: ""
     };
 
     this.sendMessageToServer = this.sendMessageToServer.bind(this);
@@ -51,7 +54,7 @@ class App extends Component {
     
           console.log("incomingNotification received!");
 
-          message.type = "usernameChange"; // change the message type to scrub the messages to/from the websocket server. Make these more meaningful.
+          message.type = "notification"; // change the message type to scrub the messages to/from the websocket server. Make these more meaningful.
 
           var messages = this.state.messages.concat(message); 
 
@@ -60,9 +63,20 @@ class App extends Component {
           console.log("NOTIFICATION", message)
 
           break;
+        case "userConnectedUpdate":
+
+          // The following will update state with the number of users online and the user colour for the current user
+          this.setState({ usersOnline: message.usersOnline, userColour: message.userColour}) // Sets the current number of users online, also sets the colour for the current user's name
+
+          console.log("message", message);
+
+          console.log("USERS ONLINE: ", this.state.usersOnline);
+          console.log("USER COLOUR: ", this.state.userColour);
+
+          break;
       default:
         // show an error in the console if the message type is unknown
-        throw new Error("Unknown event type " + data.type);
+        throw new Error("Unknown event type " + message.type);
       };
     } 
   }
@@ -70,9 +84,10 @@ class App extends Component {
   sendMessageToServer (message) {
     var newId = uuid.v4();
     var userName = this.state.currentUser;
+    var userColour = this.state.userColour;
 
-    this.socket.send(JSON.stringify({ type: "postMessage", id: newId, username: userName.name, content: message }));
-
+    this.socket.send(JSON.stringify({ type: "postMessage", id: newId, username: userName.name, content: message, userColour: userColour }));
+    // Note - with each message
   }
 
   updateUsername (newUsername) {
@@ -93,7 +108,10 @@ class App extends Component {
 
     return (
       <div className="wrapper">
-        <nav><h1>Chatty</h1></nav>
+        <nav>
+          <h1>Chatty</h1>
+          <UserCount usersOnline={this.state.usersOnline} />
+        </nav>
         <MessageList messages={this.state.messages} />
         <ChatBar currentUser={this.state.currentUser} onMessageCompleted={this.sendMessageToServer} usernameChanged={this.updateUsername} /> 
       </div>

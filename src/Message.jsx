@@ -11,7 +11,7 @@ class Message extends Component {
     // console.log("this.props", this.props);
     return (
         <div className="message">
-          <span className="username">{this.props.username}</span>
+          <span className="username" id={this.props.userColour}>{this.props.username}</span>
           <span className="content">{this.props.content}</span>
         </div>
     );
