@@ -18,18 +18,16 @@ class ChatBar extends Component {
 
 
   messageInputChange(event) {
-    // console.log("letter entered in box") 
     this.setState({messageValue: event.target.value});  
   }
 
   onMessageKeyUp(event) {
-    // console.log("in handleEvent")
 
     event.preventDefault();
 
     if (event.key === 'Enter') {
-      this.props.onMessageCompleted(this.state.messageValue); // event.target.value
-      this.setState({messageValue:''}); // Resets the text box
+      this.props.onMessageCompleted(this.state.messageValue); 
+      this.setState({messageValue:''}); // Reset the text box
 
       console.log("MESSAGE SUBMITTED")
     }
@@ -38,19 +36,16 @@ class ChatBar extends Component {
 
 
   userInputChange(event) {
-    // console.log("letter entered in box") 
-    // console.log("event.target.value", event.target.value)
     this.setState({usernameValue: event.target.value});  
   }
 
   onUsernameKeyUp(event) {
-    // console.log("in onUsernameKeyUp")
 
     event.preventDefault();
 
     if (event.key === 'Enter' || event.keyCode === 9 /* Tab Key */) { // UPDATE THIS 
       this.props.usernameChanged(this.state.usernameValue);
-      // this.setState({usernameValue:''}); // Resets the text box
+
       console.log("USERNAME CHANGE SUBMITTED")
     }
 
@@ -67,7 +62,6 @@ class ChatBar extends Component {
           id="username" 
           type="text" 
           placeholder="Your Name (Optional)" 
-          // value={this.props.currentUser.name}
           value={this.state.usernameValue} 
           onChange={this.userInputChange}
           onKeyUp={this.onUsernameKeyUp}
