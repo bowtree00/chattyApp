@@ -59,9 +59,7 @@ wss.on('connection', (ws) => {
   testMessage = JSON.stringify({ userId: userId, type: 'userConnectedUpdate', content: "SOMEONE CONNECTED! Total online: " + usersOnline, usersOnline: usersOnline });
 
 
-
   wss.broadcast(testMessage);
-
 
 
   ws.on('message', function incoming(message) {
