@@ -36,31 +36,29 @@ wss.on('connection', (ws) => {
 
   usersOnline += 1;
 
-  var newId = uuid.v4();
+  var userId = uuid.v4();
 
-  // Randomly choose from one of 4 colours
-  
-  // randomNumber = Math.floor((Math.random() * 4) + 1);
+  // colourNumber = usersOnline % 4
 
-  colourNumber = usersOnline % 4
+  // var userColour = "purple"; // initialize it
 
-  var userColour = "purple"; // initialize it
-
-  switch(colourNumber) {
-    case 1:
-      userColour = "tomato"
-      break;
-    case 2:
-      userColour = "green"
-      break;
-    case 3:
-      userColour = "blue"
-      break;
-  }
+  // switch(colourNumber) {
+  //   case 1:
+  //     userColour = "tomato"
+  //     break;
+  //   case 2:
+  //     userColour = "green"
+  //     break;
+  //   case 3:
+  //     userColour = "blue"
+  //     break;
+  // }
 
   // For the new user, set id for the message, set the type, the number of users now online, and the colour for the user
   // In socket.onmessage in the App, when a message with type 'userConnectedUpdated' is sent, the App will re-set the number of users online, and will also set the colour for the current user
-  testMessage = JSON.stringify({ id: newId, type: 'userConnectedUpdate', content: "SOMEONE CONNECTED! Total online: " + usersOnline, usersOnline: usersOnline, userColour: userColour });
+  testMessage = JSON.stringify({ userId: userId, type: 'userConnectedUpdate', content: "SOMEONE CONNECTED! Total online: " + usersOnline, usersOnline: usersOnline });
+
+
 
   wss.broadcast(testMessage);
 
@@ -81,7 +79,7 @@ wss.on('connection', (ws) => {
         tempMessage["type"]='UNKNOWN_TYPE';
     }
 
-    tempMessage["connectId"]=newId;
+    tempMessage["userId"]=userId;
     // can add colour here too - if I want the server to control implementation of colours
 
     var newMessage = JSON.stringify(tempMessage);
@@ -96,7 +94,9 @@ wss.on('connection', (ws) => {
   ws.on('close', () => {
     usersOnline -= 1;
     
-    testMessage = JSON.stringify({ id: newId, type: 'userConnectedUpdate', content: "SOMEONE DISCONNECTED! Total online: " + usersOnline, usersOnline: usersOnline });
+    var closeId = uuid.v4();
+
+    testMessage = JSON.stringify({ id: closeId, type: 'userConnectedUpdate', content: "SOMEONE DISCONNECTED! Total online: " + usersOnline, usersOnline: usersOnline });
 
      console.log('Client disconnected')
 

@@ -39,7 +39,7 @@ class ChatBar extends Component {
 
   userInputChange(event) {
     // console.log("letter entered in box") 
-    console.log("event.target.value", event.target.value)
+    // console.log("event.target.value", event.target.value)
     this.setState({usernameValue: event.target.value});  
   }
 

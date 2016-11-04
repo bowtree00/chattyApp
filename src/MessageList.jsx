@@ -15,21 +15,27 @@ class MessageList extends Component {
 
       <div id="message-list">
         
-          {this.props.messages.map( (message) =>
-            {
-              if (message.type === "userMessage") {
-              return <Message 
+        {this.props.messages.map( (message) =>
+          {
+            if (message.type === "userMessage") {
+
+              var userId = message.userId;
+              console.log("this.props.userMap", this.props.userMap);
+              var userMap = this.props.userMap;
+              var userColour = userMap[userId];
+
+            return <Message 
+              key={message.id}
+              username={message.username}
+              content={message.content} 
+              userColour={userColour} />
+            } else if (message.type === "notification") {
+              return <Notification
                 key={message.id}
-                username={message.username}
-                content={message.content} 
-                userColour={message.userColour} />
-              } else if (message.type === "notification") {
-                return <Notification
-                  key={message.id}
-                  content={message.content} />
-              }
-            })}
-    
+                content={message.content} />
+            }
+          })}
+
      </div>
 
     );

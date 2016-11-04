@@ -13,7 +13,7 @@ class App extends Component {
       currentUser: {name: "Anonymous"}, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [],
       usersOnline: "",
-      userColour: ""
+      userMap: {}
     };
 
     this.sendMessageToServer = this.sendMessageToServer.bind(this);
@@ -66,12 +66,39 @@ class App extends Component {
         case "userConnectedUpdate":
 
           // The following will update state with the number of users online and the user colour for the current user
-          this.setState({ usersOnline: message.usersOnline, userColour: message.userColour}) // Sets the current number of users online, also sets the colour for the current user's name
+          // this.setState({ usersOnline: message.usersOnline, userColour: message.userColour}) // Sets the current number of users online, also sets the colour for the current user's name
+          
+
+          var colourNumber = message.usersOnline % 4
+
+          var userColour = "purple"; // initialize it
+
+          switch(colourNumber) {
+            case 1:
+              userColour = "tomato"
+              break;
+            case 2:
+              userColour = "green"
+              break;
+            case 3:
+              userColour = "blue"
+              break;
+          }
+
+          var userId = message.userId;
+          console.log("USERID", userId);
+
+          var userMap = this.state.userMap;
+          userMap[userId] = userColour;
+
+          this.setState({ usersOnline: message.usersOnline, userMap: userMap }) // Sets the current number of users online, also sets the colour for the current user's name
+
 
           console.log("message", message);
 
           console.log("USERS ONLINE: ", this.state.usersOnline);
-          console.log("USER COLOUR: ", this.state.userColour);
+
+          console.log("userMap: *******", userMap);
 
           break;
       default:
@@ -84,9 +111,12 @@ class App extends Component {
   sendMessageToServer (message) {
     var newId = uuid.v4();
     var userName = this.state.currentUser;
-    var userColour = this.state.userColour;
+    // var userColour = this.state.userColour;
 
-    this.socket.send(JSON.stringify({ type: "postMessage", id: newId, username: userName.name, content: message, userColour: userColour }));
+    // this.socket.send(JSON.stringify({ type: "postMessage", id: newId, username: userName.name, content: message, userColour: userColour }));
+
+    this.socket.send(JSON.stringify({ type: "postMessage", id: newId, username: userName.name, content: message }));
+
     // Note - with each message
   }
 
@@ -112,7 +142,7 @@ class App extends Component {
           <h1>Chatty</h1>
           <UserCount usersOnline={this.state.usersOnline} />
         </nav>
-        <MessageList messages={this.state.messages} />
+        <MessageList messages={this.state.messages} userMap={this.state.userMap}/>
         <ChatBar currentUser={this.state.currentUser} onMessageCompleted={this.sendMessageToServer} usernameChanged={this.updateUsername} /> 
       </div>
     )
